@@ -172,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+#Ignore NOTEEVENTS files since they take up too much space
+Raw Data/NOTEEVENTS.csv
+Raw Data/NOTEEVENTS.csv.gz
