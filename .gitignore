@@ -176,3 +176,8 @@ cython_debug/
 #Ignore NOTEEVENTS files since they take up too much space
 Raw Data/NOTEEVENTS.csv
 Raw Data/NOTEEVENTS.csv.gz
+
+#Ignore results from training
+results
+icd9_bert_model
+summary_results.csv

@@ -1,0 +1,133 @@
+Service: MEDICINE
+
+Allergies:
+No Known Allergies / Adverse Drug Reactions
+
+Attending:[**First Name3 (LF) 5606**]
+Chief Complaint:
+Right foot pain
+
+
+Major Surgical or Invasive Procedure:
+Endotracheal intubation
+
+History of Present Illness:
+81 year old woman recently hospitalized for tri-malleolar rt
+ankle fracture s/p closed reduction presents to the ED after
+becoming agitated and removing her soft cast at her
+rehabilitation hospital. She sustained her fracture after
+falling on [**10-26**]. She underwent closed reduction and was
+discharged from [**Hospital1 18**] on [**11-4**] to extended care facility. Shortly
+after discharged, she was admitted to [**Hospital1 2025**] for AMS and thought to
+have PNA. There, she was noted to have abnormal LFT's and
+possible Afib per telephone note in OMR. She recently finished a
+course of IV abx prescribed at [**Hospital1 2025**]. Back at her ECF, she started
+having increasing pain of the right foot over the last several
+days. Today the pain became 'excruciating' and patient became
+agitated before taking off her cast. She was taken to the [**Hospital1 18**]
+ED for further evaluation.
+.
+In the ED inital vitals were, T:97 P:76 BP:89/46 RR:18 O2:97%
+RA. While getting plain films, she triggered for SBP of 70's
+after feeling 'poorly'. UA was grossly purulent and CXR
+suspicious for PNA. Patient received 1 dose of vancomycin,
+cefepime, and levofloxacin. Foley catheter was exchanged, and
+noted to have visible pus. BP was not responsive to 3.5 L IVF's
+and patient was started on levophed prior to transfer to [**Hospital Unit Name 153**].
+On arrival to [**Hospital Unit Name 153**], BP was 134/60 and patient was weaned off
+levophed. She denies recent fevers or chills. She has had a
+chronic foley for several weeks, but denies discomfort. She
+denies cough, but her sister notes that she has had one for
+several weeks. She denies current pain in foot. No shortness of
+breath, chest pain or dizziness.
+.
+Review of systems:
+(+) Per HPI
+(-) Denies fever, chills, night sweats, recent weight loss or
+gain. Denies headache. Denies chest pain, chest pressure, or
+palpitations. Denies nausea, vomiting, diarrhea, constipation,
+abdominal pain, or changes in bowel habits.
+
+
+Past Medical History:
+1. Non-Hodgkin's lymphoma, followed by Dr. [**Last Name (STitle) 3274**].
+2. Breast cancer, diagnosed [**2160**].
+3. Endometrial cancer.
+4. Lymphedema since [**2173**].
+5. Osteoarthritis.
+6. Hypertension.
+7. Paroxysmal supraventricular tachycardia and atrial ectopy.
+8. ?Afib per recent [**Hospital1 2025**] hospitalization
+
+
+Social History:
+The patient was a bank officer for 52 years until her
+retirement. She is single, no children. She is living in the
+same home with her sister that she has lived in since [**2162**]  .
+- Tobacco: Denies
+- Alcohol: Denies
+- Illicits: Denies
+
+
+Family History:
+Mother died of cirrhosis of the liver secondary to hepatitis age
+89. Father died of stomach cancer at age 64. Brother died of
+CHF.
+
+
+Physical Exam:
+Admission Physical Exam:
+Vitals: T: 96 (ax) BP: 134/60 P:64 R:16 O2:100% RA
+General: Alert, oriented to person only, tangential thought
+process with poor account of recent events, no acute distress
+HEENT: Sclera anicteric, PERLL, 0.5cm white papule on lower rt
+eyelid, Dry MM, oropharynx clear
+Neck: supple, JVP not elevated, no LAD
+Lungs: Nonlabored on RA, scattered expiratory wheeze with
+crackles over LLL
+CV: Regular rate and rhythm, normal S1 + S2, II/VI systolic
+murmur
+Abdomen: soft, non-tender, non-distended, bowel sounds present,
+no rebound tenderness or guarding, no organomegaly. No CVA
+tenderness.
+GU: foley in place
+Ext: Extensive lower extremity lymphedema, distal pulses intact
+to doppler, 3x3cm black eschar over rt without surrounding
+erythema or drainage.
+Neuro: CNII-XII intact, strength 4/5 bilaterally in UE, [**4-17**] hip
+flexors bilaterally. Wiggling toes o
+--------------------
+E8796 --> Urinary catheterization as the cause of abnormal reaction of patient, or of later complication, without mention of misadventure at time of procedure
+V4987 --> Physical restraints status
+V4986 --> Do not resuscitate status
+V8741 --> Personal history of antineoplastic chemotherapy
+V103 --> Personal history of malignant neoplasm of breast
+V1044 --> Personal history of malignant neoplasm of other female genital organs
+V1302 --> Personal history, urinary (tract) infection
+E8859 --> Fall from other slipping, tripping, or stumbling
+V4364 --> Hip joint replacement
+5718 --> Other chronic nonalcoholic liver disease
+27669 --> Other fluid overload
+4168 --> Other chronic pulmonary heart diseases
+4280 --> Congestive heart failure, unspecified
+42731 --> Atrial fibrillation
+40390 --> Hypertensive chronic kidney disease, unspecified, with chronic kidney disease stage I through stage IV, or unspecified
+5859 --> Chronic kidney disease, unspecified
+45981 --> Venous (peripheral) insufficiency, unspecified
+4571 --> Other lymphedema
+70707 --> Pressure ulcer, heel
+70720 --> Pressure ulcer, unspecified stage
+8246 --> Trimalleolar fracture, closed
+2875 --> Thrombocytopenia, unspecified
+99592 --> Severe sepsis
+59010 --> Acute pyelonephritis without lesion of renal medullary necrosis
+5180 --> Pulmonary collapse
+99664 --> Infection and inflammatory reaction due to indwelling urinary catheter
+20280 --> Other malignant lymphomas, unspecified site, extranodal and solid organ sites
+2867 --> Acquired coagulation factor deficiency
+2536 --> Other disorders of neurohypophysis
+48242 --> Methicillin resistant pneumonia due to Staphylococcus aureus
+34831 --> Metabolic encephalopathy
+5845 --> Acute kidney failure with lesion of tubular necrosis
+51881 --> Acute respiratory failure
+78552 --> Septic shock
