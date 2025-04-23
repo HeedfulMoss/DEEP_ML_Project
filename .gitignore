@@ -174,10 +174,12 @@ cython_debug/
 .pypirc
 
 #Ignore NOTEEVENTS files since they take up too much space
-Raw Data/NOTEEVENTS.csv
-Raw Data/NOTEEVENTS.csv.gz
+data/extracted/NOTEEVENTS.csv
+data/raw/NOTEEVENTS.csv.gz
 
 #Ignore results from training
-results
-icd9_bert_model
-summary_results.csv
+models/bert_icd9/results
+models/bert_icd9/icd9_bert_model
+
+#Ignore Full preprocessed data
+data/preprocessed/summary_results.csv
