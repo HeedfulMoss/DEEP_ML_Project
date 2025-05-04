@@ -188,6 +188,7 @@ Install dependencies via:
 
 ```bash
 pip install -r requirements.txt
+```
 
 ## Top 20 ICD-9 Codes
 
