@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the dataset
-df = pd.read_csv(r"C:\Users\Alex\Documents\GitHub\DEEP_ML_Project\data\preprocessed\summary_results.csv")
+df = pd.read_csv(r"C:\Users\Alex\Documents\GitHub\DEEP_ML_Project\data\preprocessed\summary_results_trimmed.csv")
 
 # Select only the ICD code columns (excluding metadata)
 icd_columns = df.columns.difference(['SUBJECT_ID', 'HADM_ID', 'summary_snippet'])
