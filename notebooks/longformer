@@ -29,6 +29,9 @@ MAX_LENGTH = 4096  # Adjust based on note length (4096 max)
 # --- Load Data ---
 dataset = load_dataset("csv", data_files=DATA_PATH, split="train")
 
+# Extract all ICD-9 column names (assuming format ICD9_XXXX)
+icd9_columns = [col for col in dataset.column_names if col.startswith("ICD9_")]
+
 # Split train/validation
 dataset = dataset.train_test_split(test_size=0.1, seed=42)
 train_data = dataset["train"]
@@ -45,20 +48,32 @@ def tokenize(batch):
         max_length=MAX_LENGTH
     )
 
-train_data = train_data.map(tokenize, batched=True, batch_size=8)
-val_data = val_data.map(tokenize, batched=True, batch_size=8)
+train_data = train_data.map(
+    tokenize, 
+    batched=True,
+    batch_size=16,                  # Larger batch for tokenization
+    load_from_cache_file=True,      # Avoid re-tokenization
+    desc="Tokenizing train data"
+)
+
+val_data = val_data.map(
+    tokenize,
+    batched=True,
+    batch_size=16,
+    load_from_cache_file=True,
+    desc="Tokenizing val data"
+)
 
 # Convert ICD9 columns to multi-hot labels
-icd9_columns = [col for col in train_data.column_names if col.startswith("ICD9")]
-train_data = train_data.map(lambda x: {"labels": [x[col] for col in icd9_columns]})
-val_data = val_data.map(lambda x: {"labels": [x[col] for col in icd9_columns]})
+train_data = train_data.map(lambda x: {"labels": [int(x[col]) for col in icd9_columns]})
+val_data = val_data.map(lambda x: {"labels": [int(x[col]) for col in icd9_columns]})
 
 # --- Class Weighting ---
 all_labels = np.array(train_data["labels"])
 class_weights = compute_class_weight(
     "balanced",
-    classes=np.arange(len(icd9_columns)),
-    y=all_labels.argmax(axis=1)
+    classes=np.arange(len(icd9_columns)),  # One weight per ICD-9 code
+    y=all_labels.argmax(axis=1) if len(icd9_columns) > 1 else all_labels.ravel()
 )
 class_weights = torch.tensor(class_weights, dtype=torch.float32)
 
@@ -72,9 +87,11 @@ model = LongformerForSequenceClassification.from_pretrained(
 # Optional: LoRA for efficient fine-tuning
 lora_config = LoraConfig(
     task_type="SEQ_CLS",
-    r=8,
-    lora_alpha=16,
-    target_modules=["query", "value"]
+    r=4,                            # Reduced rank
+    lora_alpha=8,                   # Scaled-down alpha
+    target_modules=["query", "value"],
+    lora_dropout=0.05,
+    bias="none"
 )
 model = get_peft_model(model, lora_config)
 model.print_trainable_parameters()  # ~1% of parameters trained
@@ -115,43 +132,12 @@ training_args = TrainingArguments(
 )
 
 # --- Train ---
-# Then use it as before:
-# Pre-tokenize and cache datasets
-train_data = train_data.map(
-    tokenize, 
-    batched=True,
-    batch_size=16,                  # Larger batch for tokenization
-    load_from_cache_file=True,      # Avoid re-tokenization
-    desc="Tokenizing train data"
-)
-
-val_data = val_data.map(
-    tokenize,
-    batched=True,
-    batch_size=16,
-    load_from_cache_file=True,
-    desc="Tokenizing val data"
-)
-
-lora_config = LoraConfig(
-    task_type="SEQ_CLS",
-    r=4,                            # Reduced rank (faster, slightly less accurate)
-    lora_alpha=8,                   # Scaled-down alpha
-    target_modules=["query", "value"],
-    lora_dropout=0.05,
-    bias="none"
-)
-
 trainer = WeightedTrainer(
     model=model,
     args=training_args,
     train_dataset=train_data,
     eval_dataset=val_data,
 )
-
-# Convert to torch format
-train_data.set_format(type="torch", columns=["input_ids", "attention_mask", "labels"])
-val_data.set_format(type="torch", columns=["input_ids", "attention_mask", "labels"])
 
 
 trainer.train()
@@ -164,6 +150,8 @@ print(f"Model saved to {OUTPUT_DIR}")
 
 
 
+
+# PREDICT
 import torch
 from transformers import LongformerTokenizer, LongformerForSequenceClassification
 
