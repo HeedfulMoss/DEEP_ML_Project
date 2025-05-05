@@ -1,3 +1,11 @@
+!pip install python-docx
+from google.colab import drive
+drive.mount('/content/drive')
+
+# dependencies !pip install transformers torch datasets accelerate peft scikit-learn wandb
+
+!pip install datasets
+
 import numpy as np
 import torch
 from torch import nn
@@ -151,3 +159,26 @@ trainer.save_model(OUTPUT_DIR)
 tokenizer.save_pretrained(OUTPUT_DIR)
 
 print(f"Model saved to {OUTPUT_DIR}")
+
+
+
+
+
+import torch
+from transformers import LongformerTokenizer, LongformerForSequenceClassification
+
+model_path = "./longformer_icd9_finetuned"
+tokenizer = LongformerTokenizer.from_pretrained(model_path)
+model = LongformerForSequenceClassification.from_pretrained(model_path)
+
+def predict_icd9(text, threshold=0.3):
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=2048)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    probs = torch.sigmoid(outputs.logits).squeeze()
+    return [model.config.id2label[i] for i, prob in enumerate(probs) if prob > threshold]
+
+# Example
+text = "PUT YOUR PROMPT"
+print(predict_icd9(text))  # Output: ["ICD9_4019", "ICD9_4280"] ? maybe
+
