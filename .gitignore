@@ -181,5 +181,8 @@ data/raw/NOTEEVENTS.csv.gz
 models/bert_icd9/results
 models/bert_icd9/icd9_bert_model
 
+models/bert_icd_old/results
+models/bert_icd9_old/icd9_bert_model
+
 #Ignore Full preprocessed data
 data/preprocessed/summary_results.csv
