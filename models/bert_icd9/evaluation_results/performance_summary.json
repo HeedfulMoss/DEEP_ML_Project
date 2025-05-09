@@ -1,0 +1,177 @@
+{
+    "overall": {
+        "samples": 20,
+        "true_positives": 17,
+        "false_positives": 11,
+        "false_negatives": 62,
+        "true_negatives": 310,
+        "micro_precision": 0.6071428571428571,
+        "micro_recall": 0.21518987341772153,
+        "micro_f1": 0.3177570093457944,
+        "macro_precision": 0.10136363636363636,
+        "macro_recall": 0.08944444444444444,
+        "macro_f1": 0.09503176283748013
+    },
+    "per_code": [
+        {
+            "code": "4019",
+            "prevalence": 0.5,
+            "precision": 0.5,
+            "recall": 0.5,
+            "f1": 0.5,
+            "auc": 0.42
+        },
+        {
+            "code": "4280",
+            "prevalence": 0.44999998807907104,
+            "precision": 0.7272727272727273,
+            "recall": 0.8888888888888888,
+            "f1": 0.7999999999999999,
+            "auc": 0.8585858585858586
+        },
+        {
+            "code": "42731",
+            "prevalence": 0.5,
+            "precision": 0.8,
+            "recall": 0.4,
+            "f1": 0.5333333333333333,
+            "auc": 0.81
+        },
+        {
+            "code": "41401",
+            "prevalence": 0.30000001192092896,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.7023809523809523
+        },
+        {
+            "code": "5849",
+            "prevalence": 0.4000000059604645,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.8020833333333333
+        },
+        {
+            "code": "25000",
+            "prevalence": 0.20000000298023224,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.328125
+        },
+        {
+            "code": "2724",
+            "prevalence": 0.25,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.4666666666666666
+        },
+        {
+            "code": "51881",
+            "prevalence": 0.10000000149011612,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.1111111111111111
+        },
+        {
+            "code": "5990",
+            "prevalence": 0.10000000149011612,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.5
+        },
+        {
+            "code": "53081",
+            "prevalence": 0.10000000149011612,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.5833333333333333
+        },
+        {
+            "code": "2720",
+            "prevalence": 0.15000000596046448,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.6862745098039216
+        },
+        {
+            "code": "V053",
+            "prevalence": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.0
+        },
+        {
+            "code": "V290",
+            "prevalence": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.0
+        },
+        {
+            "code": "2859",
+            "prevalence": 0.20000000298023224,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.734375
+        },
+        {
+            "code": "2449",
+            "prevalence": 0.20000000298023224,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.421875
+        },
+        {
+            "code": "486",
+            "prevalence": 0.05000000074505806,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.631578947368421
+        },
+        {
+            "code": "2851",
+            "prevalence": 0.15000000596046448,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.8627450980392156
+        },
+        {
+            "code": "2762",
+            "prevalence": 0.15000000596046448,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.6862745098039215
+        },
+        {
+            "code": "496",
+            "prevalence": 0.15000000596046448,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.7450980392156863
+        },
+        {
+            "code": "99592",
+            "prevalence": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "auc": 0.0
+        }
+    ]
+}

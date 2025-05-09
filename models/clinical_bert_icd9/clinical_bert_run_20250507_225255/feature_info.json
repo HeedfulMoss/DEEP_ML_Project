@@ -1,0 +1,55 @@
+{
+    "section_names": [
+        "CHIEF_COMPLAINT",
+        "HISTORY_OF_PRESENT_ILLNESS",
+        "HOSPITAL_COURSE",
+        "PAST_MEDICAL_HISTORY",
+        "DISCHARGE_DIAGNOSIS",
+        "ASSESSMENT",
+        "ASSESSMENT_AND_PLAN",
+        "IMPRESSION"
+    ],
+    "binary_columns": [
+        "has_CHIEF_COMPLAINT",
+        "has_HISTORY_OF_PRESENT_ILLNESS",
+        "has_HOSPITAL_COURSE",
+        "has_PAST_MEDICAL_HISTORY",
+        "has_DISCHARGE_DIAGNOSIS",
+        "has_ASSESSMENT",
+        "has_ASSESSMENT_AND_PLAN",
+        "has_IMPRESSION"
+    ],
+    "numerical_columns": [
+        "section_CHIEF_COMPLAINT_length",
+        "section_HISTORY_OF_PRESENT_ILLNESS_length",
+        "section_ASSESSMENT_length",
+        "section_DISCHARGE_DIAGNOSIS_length",
+        "section_CHIEF_COMPLAINT_words",
+        "section_HISTORY_OF_PRESENT_ILLNESS_words",
+        "section_ASSESSMENT_words",
+        "section_DISCHARGE_DIAGNOSIS_words"
+    ],
+    "icd9_codes": [
+        "4019",
+        "4280",
+        "42731",
+        "41401",
+        "5849",
+        "25000",
+        "2724",
+        "51881",
+        "5990",
+        "53081",
+        "2720",
+        "V053",
+        "V290",
+        "2859",
+        "2449",
+        "486",
+        "2851",
+        "2762",
+        "496",
+        "99592"
+    ],
+    "main_text_column": "clinical_weighted_text"
+}

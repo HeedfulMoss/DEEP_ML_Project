@@ -1,0 +1,18 @@
+{
+    "data_dir": "../data",
+    "output_dir": "../models/bert_icd9",
+    "model_name": "bert-base-uncased",
+    "max_length": 512,
+    "dropout_rate": 0.1,
+    "use_section_texts": true,
+    "use_binary_indicators": true,
+    "use_numerical_features": true,
+    "text_column": "clinical_weighted_text",
+    "batch_size": 8,
+    "epochs": 3,
+    "learning_rate": 2e-05,
+    "weight_decay": 0.01,
+    "patience": 2,
+    "num_workers": 2,
+    "seed": 42
+}
