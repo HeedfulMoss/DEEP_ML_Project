@@ -32,7 +32,8 @@ DEEP_ML_Project/
 │   
 ├── notebooks/
 │   ├── Pre-Processing.ipynb           ← pre-processing, creates the summary_results files
-│   ├── MIMIC_ICD9_Bert_Train.ipynb     ← model training, creates populates "bert_icd9" 
+│   ├── MIMIC_ICD9_Bert_Train.ipynb     ← model training, creates populates "bert_icd9"
+│   ├── longformer_Train.oy     ← model training, creates populates "Longfomer"
 │
 ├── docs/
 │   ├── next_steps.txt
