@@ -178,8 +178,11 @@ data/extracted/NOTEEVENTS.csv
 data/raw/NOTEEVENTS.csv.gz
 
 #Ignore results from training
-models/bert_icd9/results
-models/bert_icd9/icd9_bert_model
+models/
+models/bert_icd9/icd9_label_binarizer.pkl
 
 #Ignore Full preprocessed data
 data/preprocessed/summary_results.csv
+models/bert_icd9/icd9_label_binarizer.pkl
+models/bert_icd9/icd9_label_binarizer.pkl
+models/bert_icd9/icd9_label_binarizer.pkl

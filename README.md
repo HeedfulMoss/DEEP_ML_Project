@@ -15,7 +15,7 @@ DEEP_ML_Project/
 │   │   ├── DIAGNOSES_ICD.csv.gz
 │   │   ├── NOTEEVENTS.csv.gz       🔒 [Manual Download Required]
 │   │
-│   ├── extracted/                   ← Uncompressed versions of raw files
+│   ├── extracted/                   ← Uncompressed versions of raw files, also contains trimmed versions
 │   │   ├── D_ICD_DIAGNOSES.csv
 │   │   ├── DIAGNOSES_ICD.csv
 │   │   ├── NOTEEVENTS.csv          🔒 [Manual Download Required]
@@ -37,6 +37,11 @@ DEEP_ML_Project/
 ├── docs/
 │   ├── next_steps.txt
 │   └── test_note.txt
+│
+├── scripts/                           ← Added execution scripts
+│   ├── train_icd9_predictor.py        ← For training the model
+│   ├── evaluate_icd9_model.py         ← For model evaluation
+│   └── predict_icd9_codes.py          ← For generating predictions
 │
 └── venv/                       ❌ [Ignored virtual environment]
 ```
@@ -162,25 +167,82 @@ The final preprocessed dataset (`summary_results.csv`) contains:
 - ICD9_XXXX: One-hot encoded columns for each of the top 20 ICD-9 codes
 - diagnosis_count: Total number of diagnosis codes for the admission
 
-## 🧠 Machine Learning Application
+### Precision-Recall Performance
+- Average precision scores by condition:
+  - Code 4280 (Heart failure): AP = 0.83
+  - Code 42731 (Atrial fibrillation): AP = 0.83
+  - Code 5849 (Kidney failure): AP = 0.78
+  - Code 41401 (Coronary atherosclerosis): AP = 0.53
+  - Code 4019 (Hypertension): AP = 0.45
 
-The processed dataset is designed for multi-label text classification:
+### Key Findings
+- Model performs best on conditions with specific terminology in notes
+- Heart failure and atrial fibrillation have clearest clinical language markers
+- Common conditions like hypertension are more challenging to differentiate
+- Section-specific features improved predictions for nuanced diagnoses
+- Performance correlates with distinctiveness of clinical language for each condition
 
-1. **Input**: Clinical text (either full notes or extracted sections)
-2. **Output**: Predictions for 20 binary classification tasks (one per ICD-9 code)
+## 🧰 Running the Model
 
-Key benefits of the preprocessing for ML:
-- **Reduced noise**: De-identification standardization helps models focus on clinical content
-- **Structured features**: Section extraction provides structured information from unstructured text
-- **Multiple text representations**: Models can use either full text or focused sections
-- **Well-formatted labels**: One-hot encoding simplifies multi-label learning
+### 1. Training (`train_icd9_predictor.py`)
 
-## 🧰 Core Notebooks
+```bash
+python train_icd9_predictor.py \
+    --data_dir ../data \
+    --output_dir ../models/bert_icd9 \
+    --batch_size 8 \
+    --epochs 3 \
+    --learning_rate 2e-5 \
+    --text_column clinical_weighted_text
+```
 
-| Notebook | Description |
-|----------|-------------|
-| `Pre-Processing.ipynb` | Prepares and merges MIMIC data into a training-ready format |
-| `MIMIC_ICD9_Bert_Train.ipynb` | Fine-tunes BERT model and outputs model artifacts + logs |
+Final use case:
+
+```bash
+python train_icd9_predictor.py --data_dir ../data --output_dir ../models/bert_icd9 --batch_size 8 --epochs 3 --learning_rate 2e-5 --text_column clinical_weighted_text --use_section_texts --use_binary_indicators --use_numerical_features
+```
+
+
+Key parameters:
+- `--data_dir`: Directory containing the data
+- `--output_dir`: Directory to save the model
+- `--batch_size`: Batch size for training (reduce if running into memory issues)
+- `--epochs`: Number of training epochs
+- `--text_column`: Which text column to use (clinical_weighted_text or summary_snippet_clean)
+
+### 2. Evaluation (`evaluate_icd9_model.py`)
+
+```bash
+python evaluate_icd9_model.py \
+    --model_dir ../models/bert_icd9 \
+    --test_data_path ../data/preprocessed/summary_results.csv \
+    --output_dir ../models/bert_icd9/evaluation_results \
+    --threshold 0.5
+```
+
+```bash
+python evaluate_icd9_model.py --model_dir ../models/bert_icd9 --test_data_path ../data/preprocessed/summary_results_trimmed.csv --output_dir ../models/bert_icd9/evaluation_results --text_column summary_snippet_clean
+```
+
+Key parameters:
+- `--model_dir`: Directory containing the trained model
+- `--test_data_path`: Path to the test data
+- `--threshold`: Classification threshold (0.5 default)
+
+### 3. Prediction (`predict_icd9_codes.py`)
+
+```bash
+# For a single file
+python predict_icd9_codes.py \
+    --model_dir ../models/bert_icd9 \
+    --file ../docs/test_note.txt \
+    --output_dir ../predictions
+
+# Interactive mode
+python predict_icd9_codes.py \
+    --model_dir ../models/bert_icd9 \
+    --interactive
+```
 
 ## 📦 Requirements
 
