@@ -15,7 +15,7 @@ DEEP_ML_Project/
 │   │   ├── DIAGNOSES_ICD.csv.gz
 │   │   ├── NOTEEVENTS.csv.gz       🔒 [Manual Download Required]
 │   │
-│   ├── extracted/                   ← Uncompressed versions of raw files
+│   ├── extracted/                   ← Uncompressed versions of raw files, also contains trimmed versions
 │   │   ├── D_ICD_DIAGNOSES.csv
 │   │   ├── DIAGNOSES_ICD.csv
 │   │   ├── NOTEEVENTS.csv          🔒 [Manual Download Required]
@@ -37,6 +37,11 @@ DEEP_ML_Project/
 ├── docs/
 │   ├── next_steps.txt
 │   └── test_note.txt
+│
+├── scripts/                           ← Added execution scripts
+│   ├── train_icd9_predictor.py        ← For training the model
+│   ├── evaluate_icd9_model.py         ← For model evaluation
+│   └── predict_icd9_codes.py          ← For generating predictions
 │
 └── venv/                       ❌ [Ignored virtual environment]
 ```
@@ -64,6 +69,14 @@ DEEP_ML_Project/
 - 🧠 Fine-tuning BERT for ICD9 code classification  
 - 📊 Generating model evaluation reports and predictions  
 - 💾 Organized modular output structure for easy tracking  
+
+### Problem Statement
+
+In healthcare, manual assignment of diagnosis/procedure codes from clinical notes is time-consuming and error-prone. This project creates an automated system that extracts de-identified sample clinical data from MIMIC-III's unstructured text and maps them to standardized ICD-9 billing codes, with the goal of:
+
+- Reducing the manual burden on medical coders
+- Improving efficiency in the healthcare reimbursement process
+- Minimizing potential billing errors and complications
 
 ## 🔍 Source Data Details
 
@@ -162,25 +175,149 @@ The final preprocessed dataset (`summary_results.csv`) contains:
 - ICD9_XXXX: One-hot encoded columns for each of the top 20 ICD-9 codes
 - diagnosis_count: Total number of diagnosis codes for the admission
 
-## 🧠 Machine Learning Application
+## 🧠 Model Architecture
 
-The processed dataset is designed for multi-label text classification:
+The project implements an enhanced BERT-CNN architecture for automated ICD-9 code prediction:
 
-1. **Input**: Clinical text (either full notes or extracted sections)
-2. **Output**: Predictions for 20 binary classification tasks (one per ICD-9 code)
+### Core Components
+- **BERT Encoder:** Pre-trained model with 768-dimensional contextual embeddings
+  - Processes clinical text to understand medical terminology in context
+  - Preserves sequence information across long clinical narratives
+  - Output: Sequence of vectors (one 768d vector per token)
 
-Key benefits of the preprocessing for ML:
-- **Reduced noise**: De-identification standardization helps models focus on clinical content
-- **Structured features**: Section extraction provides structured information from unstructured text
-- **Multiple text representations**: Models can use either full text or focused sections
-- **Well-formatted labels**: One-hot encoding simplifies multi-label learning
+### Multi-scale Feature Extraction
+- **Three Parallel CNN Layers** process BERT's output simultaneously:
+  - **Kernel=3:** Captures short medical terms (HTN, CHF, MI)
+  - **Kernel=4:** Captures medium phrases (atrial fibrillation)
+  - **Kernel=5:** Captures longer diagnostic expressions (congestive heart failure)
+  - Each CNN outputs 128 feature maps → 384 total features after concatenation
 
-## 🧰 Core Notebooks
+### Document Structure Analysis
+- **Section Features:** Extracts key diagnostic sections (64d per section)
+- **Binary Indicators:** Tracks section presence/absence (reduced to 32d)
+- **Numerical Features:** Analyzes section lengths and word counts (64d)
 
-| Notebook | Description |
-|----------|-------------|
-| `Pre-Processing.ipynb` | Prepares and merges MIMIC data into a training-ready format |
-| `MIMIC_ICD9_Bert_Train.ipynb` | Fine-tunes BERT model and outputs model artifacts + logs |
+### Feature Integration
+- **Fusion Layer:** Dense(all→256) → ReLU → Dropout
+  - Learns interactions between text content and document structure
+  - Creates unified document representation focused on diagnostic information
+
+### Multi-label Classification
+- **Output Layer:** Linear layer (256→20) with sigmoid activation
+- **Prediction:** Independent probability for each of the top 20 ICD-9 codes
+
+### Complete Data Flow
+```
+Clinical Text Input
+       ↓
+BERT Embeddings (768d per token)
+       ↓
+       ├─→ CNN(k=3) →┐
+       ├─→ CNN(k=4) →┼→ Global Max Pooling
+       └─→ CNN(k=5) →┘
+                      ↓
+    ┌─────────────────┬─────────────────┬─────────────────┐
+    ↓                 ↓                 ↓                 ↓
+Section Features  Binary Indicators  Numerical Features  Main Text Features
+(Section CNN)     (Linear→32d)       (Linear→64d)       (Concatenated CNN)
+    ↓                 ↓                 ↓                 ↓
+    └─────────────────┴─────────────────┴─────────────────┘
+                      ↓
+           Feature Fusion (Linear→256d)
+                      ↓
+         Multi-label Classification (Linear→20d)
+                      ↓
+               ICD-9 Code Predictions
+```
+
+## 📈 Model Performance
+
+### ROC Performance Analysis
+- **Strong predictive power** for key cardiac conditions:
+  - Code 4280 (Congestive heart failure): AUC = 0.86
+  - Code 42731 (Atrial fibrillation): AUC = 0.81
+  - Code 5849 (Acute kidney failure): AUC = 0.80
+- **Moderate performance** for cardiovascular diagnoses:
+  - Code 41401 (Coronary atherosclerosis): AUC = 0.70
+- **Poor performance** on hypertension:
+  - Code 4019 (Unspecified hypertension): AUC = 0.42 (near random chance)
+
+### Precision-Recall Performance
+- Average precision scores by condition:
+  - Code 4280 (Heart failure): AP = 0.83
+  - Code 42731 (Atrial fibrillation): AP = 0.83
+  - Code 5849 (Kidney failure): AP = 0.78
+  - Code 41401 (Coronary atherosclerosis): AP = 0.53
+  - Code 4019 (Hypertension): AP = 0.45
+
+### Key Findings
+- Model performs best on conditions with specific terminology in notes
+- Heart failure and atrial fibrillation have clearest clinical language markers
+- Common conditions like hypertension are more challenging to differentiate
+- Section-specific features improved predictions for nuanced diagnoses
+- Performance correlates with distinctiveness of clinical language for each condition
+
+## 🧰 Running the Model
+
+### 1. Training (`train_icd9_predictor.py`)
+
+```bash
+python train_icd9_predictor.py \
+    --data_dir ../data \
+    --output_dir ../models/bert_icd9 \
+    --batch_size 8 \
+    --epochs 3 \
+    --learning_rate 2e-5 \
+    --text_column clinical_weighted_text
+```
+
+Final use case:
+
+```bash
+python train_icd9_predictor.py --data_dir ../data --output_dir ../models/bert_icd9 --batch_size 8 --epochs 3 --learning_rate 2e-5 --text_column clinical_weighted_text --use_section_texts --use_binary_indicators --use_numerical_features
+```
+
+
+Key parameters:
+- `--data_dir`: Directory containing the data
+- `--output_dir`: Directory to save the model
+- `--batch_size`: Batch size for training (reduce if running into memory issues)
+- `--epochs`: Number of training epochs
+- `--text_column`: Which text column to use (clinical_weighted_text or summary_snippet_clean)
+
+### 2. Evaluation (`evaluate_icd9_model.py`)
+
+```bash
+python evaluate_icd9_model.py \
+    --model_dir ../models/bert_icd9 \
+    --test_data_path ../data/preprocessed/summary_results.csv \
+    --output_dir ../models/bert_icd9/evaluation_results \
+    --threshold 0.5
+```
+
+```bash
+python evaluate_icd9_model.py --model_dir ../models/bert_icd9 --test_data_path ../data/preprocessed/summary_results_trimmed.csv --output_dir ../models/bert_icd9/evaluation_results --text_column summary_snippet_clean
+```
+
+Key parameters:
+- `--model_dir`: Directory containing the trained model
+- `--test_data_path`: Path to the test data
+- `--threshold`: Classification threshold (0.5 default)
+
+### 3. Prediction (`predict_icd9_codes.py`)
+
+```bash
+# For a single file
+python predict_icd9_codes.py \
+    --model_dir ../models/bert_icd9 \
+    --file ../docs/test_note.txt \
+    --output_dir ../predictions
+
+# Interactive mode
+python predict_icd9_codes.py \
+    --model_dir ../models/bert_icd9 \
+    --interactive
+```
 
 ## 📦 Requirements
 
@@ -189,6 +326,30 @@ Install dependencies via:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Design Rationale
+
+### 1. BERT + CNN Combination
+- **Clinical Language Understanding**: BERT captures deep contextual relationships in medical terminology
+- **Pattern Recognition**: CNNs excel at identifying key clinical phrases regardless of their position
+- **Efficiency**: CNN layers reduce the dimensionality of BERT's output while preserving important features
+
+### 2. Multi-kernel CNN Design
+- **Varied Medical Phrases**: Different kernel sizes (3, 4, 5) capture medical terms of varying lengths
+- **Complementary Features**: Each kernel size focuses on different aspects of the text
+  - Kernel=3: Short medical terms (e.g., "CHF", "MI", "HTN")
+  - Kernel=4: Medium-length phrases (e.g., "atrial fibrillation")
+  - Kernel=5: Longer diagnostic expressions (e.g., "congestive heart failure")
+
+### 3. Section-Specific Processing
+- **Medical Document Structure**: Clinical notes are highly structured with specialized sections
+- **Section Relevance**: Different sections have varying diagnostic importance
+- **Targeted Feature Extraction**: Allows the model to learn section-specific patterns
+
+### 4. Multi-label Classification Approach
+- **Clinical Reality**: Patients typically have multiple conditions
+- **Code Dependencies**: Some ICD-9 codes commonly co-occur (e.g., hypertension and heart failure)
+- **Threshold Flexibility**: Sigmoid outputs allow for tuning precision/recall tradeoffs per code
 
 ## Top 20 ICD-9 Codes
 
