@@ -70,14 +70,6 @@ DEEP_ML_Project/
 - 📊 Generating model evaluation reports and predictions  
 - 💾 Organized modular output structure for easy tracking  
 
-### Problem Statement
-
-In healthcare, manual assignment of diagnosis/procedure codes from clinical notes is time-consuming and error-prone. This project creates an automated system that extracts de-identified sample clinical data from MIMIC-III's unstructured text and maps them to standardized ICD-9 billing codes, with the goal of:
-
-- Reducing the manual burden on medical coders
-- Improving efficiency in the healthcare reimbursement process
-- Minimizing potential billing errors and complications
-
 ## 🔍 Source Data Details
 
 This project uses the MIMIC-III (Medical Information Mart for Intensive Care III) clinical database, which contains de-identified health data associated with ~40,000 critical care patients. Three main source files are used:
@@ -175,73 +167,6 @@ The final preprocessed dataset (`summary_results.csv`) contains:
 - ICD9_XXXX: One-hot encoded columns for each of the top 20 ICD-9 codes
 - diagnosis_count: Total number of diagnosis codes for the admission
 
-## 🧠 Model Architecture
-
-The project implements an enhanced BERT-CNN architecture for automated ICD-9 code prediction:
-
-### Core Components
-- **BERT Encoder:** Pre-trained model with 768-dimensional contextual embeddings
-  - Processes clinical text to understand medical terminology in context
-  - Preserves sequence information across long clinical narratives
-  - Output: Sequence of vectors (one 768d vector per token)
-
-### Multi-scale Feature Extraction
-- **Three Parallel CNN Layers** process BERT's output simultaneously:
-  - **Kernel=3:** Captures short medical terms (HTN, CHF, MI)
-  - **Kernel=4:** Captures medium phrases (atrial fibrillation)
-  - **Kernel=5:** Captures longer diagnostic expressions (congestive heart failure)
-  - Each CNN outputs 128 feature maps → 384 total features after concatenation
-
-### Document Structure Analysis
-- **Section Features:** Extracts key diagnostic sections (64d per section)
-- **Binary Indicators:** Tracks section presence/absence (reduced to 32d)
-- **Numerical Features:** Analyzes section lengths and word counts (64d)
-
-### Feature Integration
-- **Fusion Layer:** Dense(all→256) → ReLU → Dropout
-  - Learns interactions between text content and document structure
-  - Creates unified document representation focused on diagnostic information
-
-### Multi-label Classification
-- **Output Layer:** Linear layer (256→20) with sigmoid activation
-- **Prediction:** Independent probability for each of the top 20 ICD-9 codes
-
-### Complete Data Flow
-```
-Clinical Text Input
-       ↓
-BERT Embeddings (768d per token)
-       ↓
-       ├─→ CNN(k=3) →┐
-       ├─→ CNN(k=4) →┼→ Global Max Pooling
-       └─→ CNN(k=5) →┘
-                      ↓
-    ┌─────────────────┬─────────────────┬─────────────────┐
-    ↓                 ↓                 ↓                 ↓
-Section Features  Binary Indicators  Numerical Features  Main Text Features
-(Section CNN)     (Linear→32d)       (Linear→64d)       (Concatenated CNN)
-    ↓                 ↓                 ↓                 ↓
-    └─────────────────┴─────────────────┴─────────────────┘
-                      ↓
-           Feature Fusion (Linear→256d)
-                      ↓
-         Multi-label Classification (Linear→20d)
-                      ↓
-               ICD-9 Code Predictions
-```
-
-## 📈 Model Performance
-
-### ROC Performance Analysis
-- **Strong predictive power** for key cardiac conditions:
-  - Code 4280 (Congestive heart failure): AUC = 0.86
-  - Code 42731 (Atrial fibrillation): AUC = 0.81
-  - Code 5849 (Acute kidney failure): AUC = 0.80
-- **Moderate performance** for cardiovascular diagnoses:
-  - Code 41401 (Coronary atherosclerosis): AUC = 0.70
-- **Poor performance** on hypertension:
-  - Code 4019 (Unspecified hypertension): AUC = 0.42 (near random chance)
-
 ### Precision-Recall Performance
 - Average precision scores by condition:
   - Code 4280 (Heart failure): AP = 0.83
@@ -326,30 +251,6 @@ Install dependencies via:
 ```bash
 pip install -r requirements.txt
 ```
-
-## Design Rationale
-
-### 1. BERT + CNN Combination
-- **Clinical Language Understanding**: BERT captures deep contextual relationships in medical terminology
-- **Pattern Recognition**: CNNs excel at identifying key clinical phrases regardless of their position
-- **Efficiency**: CNN layers reduce the dimensionality of BERT's output while preserving important features
-
-### 2. Multi-kernel CNN Design
-- **Varied Medical Phrases**: Different kernel sizes (3, 4, 5) capture medical terms of varying lengths
-- **Complementary Features**: Each kernel size focuses on different aspects of the text
-  - Kernel=3: Short medical terms (e.g., "CHF", "MI", "HTN")
-  - Kernel=4: Medium-length phrases (e.g., "atrial fibrillation")
-  - Kernel=5: Longer diagnostic expressions (e.g., "congestive heart failure")
-
-### 3. Section-Specific Processing
-- **Medical Document Structure**: Clinical notes are highly structured with specialized sections
-- **Section Relevance**: Different sections have varying diagnostic importance
-- **Targeted Feature Extraction**: Allows the model to learn section-specific patterns
-
-### 4. Multi-label Classification Approach
-- **Clinical Reality**: Patients typically have multiple conditions
-- **Code Dependencies**: Some ICD-9 codes commonly co-occur (e.g., hypertension and heart failure)
-- **Threshold Flexibility**: Sigmoid outputs allow for tuning precision/recall tradeoffs per code
 
 ## Top 20 ICD-9 Codes
 
